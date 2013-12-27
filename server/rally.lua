@@ -28,6 +28,7 @@ function Rally:Start(dest)
 	self.inRally = true
 	self.timer:Restart()
 	self.tickTimer:Restart()
+	Network:Broadcast("RallyStart", dest)
 end
 
 function Rally:Broadcast(msg)
@@ -88,24 +89,32 @@ end
 
 function Rally:PlayerFinish(id,player)
 	self.finished = self.finished or {}
-	self.finished[#self.finished + 1] = id
-	self:Broadcast(player:GetName() .. " reached the destination! They came in " .. #self.finished .. "st/nd/rd")
-	if #self.finished == #self.players then
-		self:EndRally()
+	self.hasFinished = self.hasFinished or {}
+	if not self.hasFinished[id] then
+		self.hasFinished[id] = true
+		self.finished[#self.finished + 1] = id
+		self:Broadcast(player:GetName() .. " reached the destination! They came in " .. #self.finished .. "st/nd/rd")
+		print(#self.finished, #self.players)
+		if #self.finished == #self.players then
+			self:EndRally()
+		end
 	end
 end
 
 function Rally:PostTick(args)
-	if self.inRally and self.tickTimer:GetSeconds() > self.resolution then
-		self.tickTimer:Restart()
+	if self.inRally then
 		for i,v in pairs(self.players) do
 			local p = Player.GetById(i)
 			local pos = p:GetPosition()
-			table.insert(v, { type = "tick", position = {pos.x, pos.y}})
 			pos = worldToMap(pos)
 			local d = distance(self.destination[1],self.destination[2],pos[1],pos[2])
-			self:Broadcast("player is " .. d .. " metres from the destination")
-			if d < 5 then
+			if self.tickTimer:GetSeconds() > self.resolution then
+				table.insert(v, { type = "tick", position = {pos[1], pos[2]}})
+				self:Broadcast("player is " .. d .. " metres from the destination")
+				self.tickTimer:Restart()
+			end
+			
+			if d < 10 then
 				self:PlayerFinish(i,p)
 			end
 		end
@@ -122,14 +131,15 @@ function Rally:EndRally()
 	local f = io:open("lol.js", "w")
 	f:write(JSON:encode(save))
 	f:close()
+	self:Broadcast("The Rally is over!")
 end
 
 function Rally:PlayerEnterVehicle(args)
 	local player = args.player
 	if self.inRally and self.players[player:GetId()] then
 		local vehicle = args.vehicle
-		local pos = player:GetPosition()
-		table.insert(self.players[player:GetId()], { type = "enterVehicle", vehicle = vehicle:GetName(), position = {pos.x, pos.y} })
+		local pos = worldToMap(player:GetPosition())
+		table.insert(self.players[player:GetId()], { type = "enterVehicle", vehicle = vehicle:GetName(), position = {pos[1], pos[2]} })
 		self:Broadcast(player:GetName() .. " entered a " .. vehicle:GetName())
 	end
 end
@@ -138,8 +148,8 @@ function Rally:PlayerExitVehicle(args)
 	local player = args.player
 	if self.inRally and self.players[player:GetId()] then
 		local vehicle = args.vehicle
-		local pos = player:GetPosition()
-		table.insert(self.players[player:GetId()], { type = "leftVehicle",  position = {pos.x, pos.y} })
+		local pos = worldToMap(player:GetPosition())
+		table.insert(self.players[player:GetId()], { type = "leftVehicle",  position = {pos[1], pos[2]} })
 		self:Broadcast(player:GetName() .. " left their " .. vehicle:GetName())
 	end
 end
@@ -147,8 +157,8 @@ end
 function Rally:PlayerDeath(args)
 	local player = args.player
 	if self.inRally and self.players[player:GetId()] then
-		local pos = player:GetPosition()
-		table.insert(self.players[player:GetId()], { type = "death", position = {pos.x, pos.y} })
+		local pos = worldToMap(player:GetPosition())
+		table.insert(self.players[player:GetId()], { type = "death", position = {pos[1], pos[2]} })
 		self:Broadcast(player:GetName() .. " died. Lol")
 	end
 end
