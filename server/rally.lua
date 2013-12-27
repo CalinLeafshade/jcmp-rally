@@ -94,6 +94,7 @@ function Rally:PostTick(args)
 			local pos = p:GetPosition()
 			table.insert(v, { type = "tick", position = {pos.x, pos.y}})
 			local d = distance(self.destination[1],self.destination[2],pos.x,pos.y)
+			self:Broadcast("player is " .. d .. " metres from the destination")
 			if d < 5 then
 				self:PlayerFinish(i,p)
 			end
@@ -116,7 +117,7 @@ end
 function Rally:PlayerEnterVehicle(args)
 	local player = args.player
 	if self.inRally and self.players[player:GetId()] then
-		local vehicle = arg.vehicle
+		local vehicle = args.vehicle
 		local pos = player:GetPosition()
 		table.insert(self.players[player:GetId()], { type = "enterVehicle", vehicle = vehicle:GetName(), position = {pos.x, pos.y} })
 		self:Broadcast(player:GetName() .. " entered a " .. vehicle:GetName())
@@ -126,7 +127,7 @@ end
 function Rally:PlayerExitVehicle(args)
 	local player = args.player
 	if self.inRally and self.players[player:GetId()] then
-		local vehicle = arg.vehicle
+		local vehicle = args.vehicle
 		local pos = player:GetPosition()
 		table.insert(self.players[player:GetId()], { type = "leftVehicle",  position = {pos.x, pos.y} })
 		self:Broadcast(player:GetName() .. " left their " .. vehicle:GetName())
