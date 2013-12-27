@@ -20,7 +20,7 @@ end
 
 function Rally:Start(dest)
 	self.players = {}
-	for i,v in Server:GetPlayers() do
+	for v in Server:GetPlayers() do
 		self.players[v:GetId()] = {}
 	end
 	self:Broadcast("Rally underway! Your destination is X:" .. dest[1] .. " Y:" .. dest[2])
