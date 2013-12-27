@@ -125,15 +125,16 @@ end
 
 function Rally:EndRally()
 	self.inRally = false
+	self:Broadcast("The Rally is over!")
 	local save = {}
 	for i,v in pairs(self.players) do
 		local p = Player.GetById(i)
 		save[p:GetName()] = v
 	end
-	local f = io:open("lol.js", "w")
+	local f = io.open("lol.js", "w")
 	f:write(JSON:encode(save))
 	f:close()
-	self:Broadcast("The Rally is over!")
+	self:Broadcast("Rally saved")
 end
 
 function Rally:PlayerEnterVehicle(args)
