@@ -26,8 +26,8 @@ function Rally:Start(dest)
 	self:Broadcast("Rally underway! Your destination is X:" .. dest[1] .. " Y:" .. dest[2])
 	self.destination = dest
 	self.inRally = true
-	self.timer:Reset()
-	self.tickTimer:Reset()
+	self.timer:Restart()
+	self.tickTimer:Restart()
 end
 
 function Rally:Broadcast(msg)
