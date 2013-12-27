@@ -36,7 +36,7 @@ end
 
 local function worldToMap(v)
 	origin = Vector3(-16384, 0, -16384)
-	v = v + origin
+	v = v - origin
 	return {v.x,v.z}
 end
 
