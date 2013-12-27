@@ -61,6 +61,9 @@ function Rally:ChatMessage(args)
 		else
 			self:Broadcast("Provide coordinates for destination")
 		end
+	elseif cmdargs[1] == "/pos" then
+		self:Broadcast(tostring(player:GetPosition()))
+		print(player:GetPosition())
     end
     
     return false
