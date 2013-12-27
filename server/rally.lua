@@ -34,6 +34,12 @@ function Rally:Broadcast(msg)
 	Chat:Broadcast( "[Rally] " .. msg, Color(0xfff0c5b0) )
 end
 
+local function worldToMap(v)
+	origin = Vector3(-16384, 0, -16384)
+	v = v + origin
+	return {v.x,v.z}
+end
+
 function Rally:ChatMessage(args)
 	local msg = args.text
     local player = args.player
@@ -96,7 +102,8 @@ function Rally:PostTick(args)
 			local p = Player.GetById(i)
 			local pos = p:GetPosition()
 			table.insert(v, { type = "tick", position = {pos.x, pos.y}})
-			local d = distance(self.destination[1],self.destination[2],pos.x,pos.y)
+			pos = worldToMap(pos)
+			local d = distance(self.destination[1],self.destination[2],pos[1],pos[2])
 			self:Broadcast("player is " .. d .. " metres from the destination")
 			if d < 5 then
 				self:PlayerFinish(i,p)
