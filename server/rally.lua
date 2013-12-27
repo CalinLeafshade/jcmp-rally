@@ -20,8 +20,10 @@ end
 
 function Rally:Start(dest)
 	self.players = {}
+	self.playerCount = 0
 	for v in Server:GetPlayers() do
 		self.players[v:GetId()] = {}
+		self.playerCount = self.playerCount + 1
 	end
 	self:Broadcast("Rally underway! Your destination is X:" .. dest[1] .. " Y:" .. dest[2])
 	self.destination = dest
@@ -95,7 +97,7 @@ function Rally:PlayerFinish(id,player)
 		self.finished[#self.finished + 1] = id
 		self:Broadcast(player:GetName() .. " reached the destination! They came in " .. #self.finished .. "st/nd/rd")
 		print(#self.finished, #self.players)
-		if #self.finished == #self.players then
+		if #self.finished == self.playerCount then
 			self:EndRally()
 		end
 	end
