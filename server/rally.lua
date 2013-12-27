@@ -15,7 +15,7 @@ function Rally:__init()
 
     self.timer = Timer()
 	self.tickTimer = Timer()
-	self.resolution = 15
+	self.resolution = 5
 end
 
 function Rally:Start(dest)
