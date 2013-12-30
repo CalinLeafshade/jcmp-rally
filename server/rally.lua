@@ -112,10 +112,14 @@ function Tracker:PlayerExitVehicle(args)
 	end
 end
 
+function Tracker:Broadcast(msg)
+	Chat:Broadcast( "[Tracker] " .. msg, Color(0xfff0c5b0) )
+end
+
 function Tracker:Save()
 	local save = {}
 	for id,player in pairs(self.trackedPlayers) do
-		save[player:GetName()] = self.trackedData[id]
+		save[player:GetName()] = self.trackerData[id]
 	end
 	local filename = "TrackedData - " .. os.date("%x%X") .. ".js"
 	local f = io.open(filename, "w")
