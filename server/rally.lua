@@ -121,7 +121,7 @@ function Tracker:Save()
 	for id,player in pairs(self.trackedPlayers) do
 		save[player:GetName()] = self.trackerData[id]
 	end
-	local filename = "TrackedData - " .. os.date("%x%X") .. ".js"
+	local filename = "TrackedData - " .. os.date("%d-%m %X") .. ".js"
 	local f = io.open(filename, "w")
 	if f then
 		f:write(JSON:encode(save))
