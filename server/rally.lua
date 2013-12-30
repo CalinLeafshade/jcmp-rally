@@ -21,6 +21,8 @@ end
 function Rally:Start(dest)
 	self.players = {}
 	self.playerCount = 0
+	self.finished = {}
+	self.hasFinished = {}
 	for v in Server:GetPlayers() do
 		self.players[v:GetId()] = {}
 		self.playerCount = self.playerCount + 1
@@ -90,8 +92,6 @@ local function distance ( x1, y1, x2, y2 )
 end
 
 function Rally:PlayerFinish(id,player)
-	self.finished = self.finished or {}
-	self.hasFinished = self.hasFinished or {}
 	if not self.hasFinished[id] then
 		self.hasFinished[id] = true
 		self.finished[#self.finished + 1] = id
@@ -105,20 +105,23 @@ end
 
 function Rally:PostTick(args)
 	if self.inRally then
+		local doUpdate = self.tickTimer:GetSeconds() > self.resolution
 		for i,v in pairs(self.players) do
 			local p = Player.GetById(i)
 			local pos = p:GetPosition()
 			pos = worldToMap(pos)
 			local d = distance(self.destination[1],self.destination[2],pos[1],pos[2])
-			if self.tickTimer:GetSeconds() > self.resolution then
+			if doUpdate then
 				table.insert(v, { type = "tick", position = {pos[1], pos[2]}})
-				self:Broadcast("player is " .. d .. " metres from the destination")
 				self.tickTimer:Restart()
 			end
 			
 			if d < 10 then
 				self:PlayerFinish(i,p)
 			end
+		end
+		if doUpdate then
+			self.tickTimer:Restart()
 		end
 	end
 end
