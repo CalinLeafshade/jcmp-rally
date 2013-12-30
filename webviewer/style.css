@@ -3,13 +3,29 @@
 	top:-200px;
 	color: #ffffff;
 	font-size: 16px;
-	background-color: rgba(0,0,0,0.3);
+	background-color: rgba(0,0,0,0.5);
 }
 
 #legend {
 	position: absolute;
 	top: 50px;
 	left: 50px;
-	font-size: 16px;
+	font-size: 24px;
 	background-color: rgba(0,0,0,0.3);
+}
+
+.eventSpot {
+	border-radius: 50%;
+	position: absolute;
+	width: 20px;
+	height: 20px; 
+	background-color: #ffffff;
+}
+
+#eventDescription {
+	position: absolute;
+	top:-200px;
+	color: #ffffff;
+	font-size: 24px;
+	background-color: rgba(0,0,0,0.5);
 }
