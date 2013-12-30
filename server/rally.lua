@@ -48,7 +48,7 @@ end
 function Tracker:AddPlayer(player)
 	local id = player:GetId()
 	self.trackedPlayers[id] = player
-	sefl.trackerData[id] = {}
+	self.trackerData[id] = {}
 end
 
 function Tracker:RemovePlayer(player, removeData)
